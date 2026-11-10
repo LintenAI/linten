@@ -1,0 +1,28 @@
+{
+  "chainId": 56,
+  "chain": "BNB Smart Chain",
+  "deployedAt": "2026-11-09",
+  "deployBlock": 132645236,
+  "deployTx": "0x412dd4ffcbe10adef4f30f6548cb381685790e018f2a5dcdb8d6e9bb5ab94e43",
+  "deployer": "0x984aE172B6761DD0e78B4B33D6704F99983B6e5e",
+  "status": "LIVE",
+  "LaunchFactory": "0xE69B7098825437c6504811eA6f905A38F3719a0e",
+  "LaunchLocker": "0x2568fEBfDaC4848dF32B16Ab0FfcB07D44881d87",
+  "uniswapV4": {
+    "poolManager": "0x28e2Ea090877bF75740558f6BFB36A5ffeE9e9dF",
+    "positionManager": "0x7A4a5c919aE2541AeD11041A1AEeE68f1287f95b",
+    "permit2": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+    "stateView": "0xd13Dd3D6E93f276FAfc9Db9E6BB47C1180aeE0c4",
+    "quoter": "0x95C086d7fE28AdD842ee220fef225a777474d781",
+    "universalRouter": "0xDc264714F68d84CF29BC605589405E78bDBE7C9f",
+    "universalRouterSwapLayout": "v2 (ExactInputSingleParams includes minHopPriceX36; Universal Router 2.1.2)"
+  },
+  "quotes": {
+    "BNB": "0x0000000000000000000000000000000000000000",
+    "WBNB": "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
+    "USDT": "0x55d398326f99059fF775485246999027B3197955",
+    "USDC": "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d"
+  },
+  "platformFee": "none",
+  "note": "Live. Deployer nonce was 7, so these addresses differ from Base, Robinhood Chain and Arc. Gas used 4,308,660."
+}
