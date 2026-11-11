@@ -2,7 +2,7 @@
 
 One transaction deploys a fixed-supply ERC-20, opens a Uniswap v4 pool, and locks the whole supply as liquidity. The factory and the locker have no owner, no admin, and no fee address. A creator chooses a trading fee of 0%, 1%, or 3%. That fee is paid to the beneficiaries named at launch, or burned.
 
-The site is [morselaunch.xyz](https://morselaunch.xyz). This repository is the Foundry project for the contracts. The original MIT source is [Twigpine/openlaunch](https://github.com/Twigpine/openlaunch).
+The site is [morselaunch.xyz](https://morselaunch.xyz). This repository is the Foundry project for the contracts. The site is [MorseLaunch/app](https://github.com/MorseLaunch/app). Notes are in [MorseLaunch/docs](https://github.com/MorseLaunch/docs).
 
 ## Contracts
 
@@ -65,4 +65,4 @@ Verify with `script/verify.sh`. Constructor arguments are PoolManager, PositionM
 
 ## License
 
-MIT. Keep the copyright and permission notice with any copy. The upstream project is [Twigpine/openlaunch](https://github.com/Twigpine/openlaunch).
+MIT. Keep the copyright and permission notice with any copy. The site is [MorseLaunch/app](https://github.com/MorseLaunch/app). Notes are in [MorseLaunch/docs](https://github.com/MorseLaunch/docs).
