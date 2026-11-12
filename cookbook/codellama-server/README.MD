@@ -143,7 +143,7 @@ All responses from the server are returned in the following format (for all LLM 
 
 - [Our calendar 👋](https://calendly.com/d/4mp-gd3-k5k/lintenai-1-1-onboarding-linten-hosted-version)
 - [Community Discord 💭](https://discord.gg/wuPM9dRgDw)
-- Our emails ✉️ ishaan@berri.ai / krrish@berri.ai
+- Our email ✉️ agents@linten.ai
 
 ## Roadmap
 

@@ -3547,7 +3547,7 @@ async def view_spend_logs(
 
     Example Request for specific user_id
     ```
-    curl -X GET "http://0.0.0.0:8000/spend/logs?user_id=ishaan@berri.ai" \
+    curl -X GET "http://0.0.0.0:8000/spend/logs?user_id=agents@linten.ai" \
 -H "Authorization: Bearer $LINTEN_MASTER_KEY"
     ```
 

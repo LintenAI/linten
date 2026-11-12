@@ -374,7 +374,7 @@ If you need help:
 
 - 💬 [Join our Discord](https://discord.gg/wuPM9dRgDw)
 - 💬 [Join our Slack](https://www.linten.ai/support)
-- 📧 Email us: ishaan@berri.ai / krrish@berri.ai
+- 📧 Email us: agents@linten.ai
 - 🐛 [Create an issue](https://github.com/LintenAI/linten/issues/new)
 
 ## What to Contribute

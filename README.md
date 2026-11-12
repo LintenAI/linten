@@ -748,7 +748,7 @@ All these checks must pass before your PR can be merged.
 - [Schedule Demo 👋](https://calendly.com/d/4mp-gd3-k5k/lintenai-1-1-onboarding-linten-hosted-version)
 - [Community Discord 💭](https://discord.gg/wuPM9dRgDw)
 - [Community Slack 💭](https://www.linten.ai/support)
-- Our emails ✉️ ishaan@berri.ai / krrish@berri.ai
+- Our email ✉️ agents@linten.ai
 
 # Contributors
 

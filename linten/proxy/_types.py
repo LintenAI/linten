@@ -4666,7 +4666,7 @@ class UserManagementEndpointParamDocStringEnums(str, enum.Enum):
     permissions_doc_str = (
         """Optional[dict] - [Not Implemented Yet] User-specific permissions, eg. turning off pii masking."""
     )
-    metadata_doc_str = """Optional[dict] - Metadata for user, store information for user. Example metadata = {"team": "core-infra", "app": "app2", "email": "ishaan@berri.ai" }"""
+    metadata_doc_str = """Optional[dict] - Metadata for user, store information for user. Example metadata = {"team": "core-infra", "app": "app2", "email": "agents@linten.ai" }"""
     max_parallel_requests_doc_str = """Optional[int] - Rate limit a user based on the number of parallel requests. Raises 429 error, if user's parallel requests > x."""
     model_max_budget_doc_str = """Optional[dict] - Model-specific max budget for user. [Docs](https://docs.linten.ai/docs/proxy/users#add-model-specific-budgets-to-keys)"""
     model_rpm_limit_doc_str = """Optional[float] - Model-specific rpm limit for user. [Docs](https://docs.linten.ai/docs/proxy/users#add-model-specific-limits-to-keys)"""
