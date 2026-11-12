@@ -1,0 +1,33 @@
+[package]
+name = "linten-inference-chat"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+linten-secret-value.workspace = true
+linten-auth = { workspace = true, features = ["aws", "azure", "gcp"] }
+linten-cache-response.workspace = true
+linten-core-utils.workspace = true
+linten-host.workspace = true
+linten-http.workspace = true
+linten-inference.workspace = true
+linten-llms.workspace = true
+linten-llms-types.workspace = true
+linten-secrets.workspace = true
+
+serde_json = { workspace = true, features = ["preserve_order"] }
+futures-util.workspace = true
+tracing.workspace = true
+
+[dev-dependencies]
+linten-cache-memory.workspace = true
+linten-error.workspace = true
+linten-host-native.workspace = true
+linten-http = { workspace = true, features = ["test-support"] }
+linten-inference-testing.workspace = true
+linten-tracing.workspace = true
+rstest.workspace = true
+tokio.workspace = true
+wiremock.workspace = true

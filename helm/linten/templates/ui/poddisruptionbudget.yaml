@@ -1,0 +1,7 @@
+{{- include "linten.pdb" (dict
+  "root" $
+  "enabled" (include "linten.ui.render" .)
+  "component" .Values.ui
+  "componentName" "ui"
+  "fullname" (include "linten.ui.fullname" .)
+  "selectorLabels" (include "linten.ui.selectorLabels" .)) }}

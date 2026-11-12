@@ -1,0 +1,27 @@
+[package]
+name = "linten-cache-gcs"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+linten-secret-value.workspace = true
+linten-http.workspace = true
+futures-util.workspace = true
+linten-auth-gcp.workspace = true
+linten-auth-types.workspace = true
+linten-cache.workspace = true
+percent-encoding.workspace = true
+reqwest.workspace = true
+thiserror.workspace = true
+tokio.workspace = true
+
+[dev-dependencies]
+linten-error.workspace = true
+linten-http = { workspace = true, features = ["test-support"] }
+linten-cache-testing.workspace = true
+rstest.workspace = true
+serde_json.workspace = true
+tokio.workspace = true
+wiremock.workspace = true

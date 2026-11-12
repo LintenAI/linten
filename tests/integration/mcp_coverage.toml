@@ -1,0 +1,16 @@
+[tool.coverage.run]
+branch = false
+core = "sysmon"
+parallel = true
+relative_files = true
+include = [
+    "linten/proxy/mcp_server/*",
+    "linten/proxy/management_endpoints/mcp_management_endpoints.py",
+    "linten/responses/mcp/*",
+    "linten/mcp_client/*",
+    "linten/proxy/guardrails/guardrail_hooks/mcp_*",
+]
+
+[tool.coverage.report]
+show_missing = true
+skip_empty = true

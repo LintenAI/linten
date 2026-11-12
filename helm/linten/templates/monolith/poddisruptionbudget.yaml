@@ -1,0 +1,7 @@
+{{- include "linten.pdb" (dict
+  "root" $
+  "enabled" .Values.monolith.enabled
+  "component" .Values.gateway
+  "componentName" "proxy"
+  "fullname" (include "linten.proxy.fullname" .)
+  "selectorLabels" (include "linten.proxy.selectorLabels" .)) }}

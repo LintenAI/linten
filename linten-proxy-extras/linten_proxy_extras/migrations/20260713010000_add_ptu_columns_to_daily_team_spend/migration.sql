@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Linten_DailyTeamSpend" ADD COLUMN IF NOT EXISTS "ptu_flat_cost" DOUBLE PRECISION NOT NULL DEFAULT 0.0;

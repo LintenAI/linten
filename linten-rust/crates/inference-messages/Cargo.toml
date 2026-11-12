@@ -1,0 +1,38 @@
+[package]
+name = "linten-inference-messages"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+linten-secret-value.workspace = true
+bytes.workspace = true
+futures-util.workspace = true
+linten-auth = { workspace = true, features = ["aws", "azure", "gcp"] }
+linten-auth-aws.workspace = true
+linten-cache-response.workspace = true
+linten-core-utils.workspace = true
+linten-host.workspace = true
+linten-http.workspace = true
+linten-inference.workspace = true
+linten-llms.workspace = true
+linten-llms-types.workspace = true
+linten-router-types.workspace = true
+linten-secrets.workspace = true
+linten-tracing.workspace = true
+reqwest.workspace = true
+serde.workspace = true
+serde_json = { workspace = true, features = ["preserve_order"] }
+tokio.workspace = true
+tracing.workspace = true
+
+[dev-dependencies]
+linten-error.workspace = true
+linten-framer = { workspace = true, features = ["sse"] }
+linten-cache-memory.workspace = true
+linten-host-native.workspace = true
+linten-http = { workspace = true, features = ["test-support"] }
+linten-inference-testing.workspace = true
+rstest.workspace = true
+wiremock.workspace = true

@@ -1,0 +1,3 @@
+{{- if .Values.monolith.enabled }}
+{{- include "linten.workload.deployment" . }}
+{{- end }}

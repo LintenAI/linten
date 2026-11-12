@@ -1,0 +1,3 @@
+{{- if include "linten.gateway.render" . }}
+{{- include "linten.workload.service" . }}
+{{- end }}

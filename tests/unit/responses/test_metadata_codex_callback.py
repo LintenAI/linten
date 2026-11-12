@@ -1,0 +1,114 @@
+"""
+Test that metadata is passed to custom callbacks during chat completion calls to codex models.
+
+Fixes issue: Metadata is no longer passed to custom callback during chat completion
+calls to codex models (#21204)
+
+Codex models (gpt-5.1-codex, gpt-5.2-codex) use mode=responses and route through
+responses_api_bridge. The bridge converts metadata to linten_metadata. This test
+verifies metadata is preserved for custom callbacks via kwargs['linten_params']['metadata'].
+"""
+
+import asyncio
+from typing import Optional
+from unittest.mock import AsyncMock, patch
+
+
+import pytest
+
+import linten
+from linten.integrations.custom_logger import CustomLogger
+
+
+def _make_mock_http_response(response_dict: dict):
+    """Create a mock HTTP response that returns response_dict from .json()."""
+
+    class MockResponse:
+        def __init__(self, json_data, status_code=200):
+            self._json_data = json_data
+            self.status_code = status_code
+            self.text = str(json_data)
+            self.headers = {}
+
+        def json(self):
+            return self._json_data
+
+    return MockResponse(response_dict, 200)
+
+
+class MetadataCaptureCallback(CustomLogger):
+    """Custom callback that captures kwargs passed to async_log_success_event."""
+
+    def __init__(self):
+        self.captured_kwargs: Optional[dict] = None
+        self.event = asyncio.Event()
+
+    async def async_log_success_event(self, kwargs, response_obj, start_time, end_time):
+        self.captured_kwargs = kwargs
+        self.event.set()
+
+
+
+
+@pytest.mark.asyncio
+async def test_metadata_passed_via_linten_metadata_responses_api():
+    """
+    Test that when calling responses() directly with linten_metadata,
+    metadata is preserved for custom callbacks.
+
+    Uses HTTP mock since mock_response returns early before update_environment_variables.
+    """
+    from linten.types.llms.openai import ResponsesAPIResponse
+
+    mock_response = ResponsesAPIResponse.model_construct(
+        id="resp-test-2",
+        created_at=0,
+        output=[
+            {
+                "type": "message",
+                "id": "msg-2",
+                "status": "completed",
+                "role": "assistant",
+                "content": [{"type": "output_text", "text": "Hi there!"}],
+            }
+        ],
+        object="response",
+        model="gpt-4o",
+        status="completed",
+        usage={
+            "input_tokens": 2,
+            "output_tokens": 3,
+            "total_tokens": 5,
+        },
+    )
+
+    test_metadata = {"request_id": "req-456"}
+    callback = MetadataCaptureCallback()
+    original_callbacks = linten.callbacks.copy() if linten.callbacks else []
+    linten.callbacks = [callback]
+
+    try:
+        with patch(
+            "linten.llms.custom_httpx.http_handler.AsyncHTTPHandler.post",
+            new_callable=AsyncMock,
+        ) as mock_post:
+            mock_post.return_value = _make_mock_http_response(
+                mock_response.model_dump()
+            )
+            await linten.aresponses(
+                model="gpt-4o",
+                input="hi",
+                linten_metadata=test_metadata,
+            )
+
+        await asyncio.wait_for(callback.event.wait(), timeout=5.0)
+
+        assert callback.captured_kwargs is not None
+
+        linten_params = callback.captured_kwargs.get("linten_params", {})
+        metadata = linten_params.get("metadata") or {}
+
+        assert "request_id" in metadata
+        assert metadata["request_id"] == "req-456"
+    finally:
+        linten.callbacks = original_callbacks

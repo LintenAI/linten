@@ -1,0 +1,25 @@
+[package]
+name = "linten-inference-transcription"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+futures-util.workspace = true
+linten-auth.workspace = true
+linten-core-utils.workspace = true
+linten-http.workspace = true
+linten-inference.workspace = true
+linten-llms.workspace = true
+linten-secrets.workspace = true
+serde_json.workspace = true
+tracing.workspace = true
+
+[dev-dependencies]
+linten-error.workspace = true
+linten-inference-testing.workspace = true
+linten-tracing.workspace = true
+rstest.workspace = true
+tokio.workspace = true
+wiremock.workspace = true

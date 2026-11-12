@@ -1,0 +1,43 @@
+# Linten quickstart stack: the gateway plus a Postgres database that stores
+# models, virtual keys, and spend logs. Used by
+# https://docs.linten.ai/docs/proxy/docker_quick_start
+#
+#   curl -sSLO https://github.com/LintenAI/linten/raw/main/docker/docker-compose.quickstart.yml
+#   printf 'LINTEN_MASTER_KEY=sk-%s\nLINTEN_SALT_KEY=sk-%s\n' "$(openssl rand -hex 32)" "$(openssl rand -hex 32)" > .env
+#   docker compose -f docker-compose.quickstart.yml up -d
+#
+# Compose reads .env from this directory. Keep it: regenerating LINTEN_SALT_KEY
+# makes credentials already stored in the database unreadable. For anything
+# beyond local evaluation, pin the image to a specific release tag.
+services:
+  linten:
+    image: docker.linten.ai/lintenai/linten:latest
+    ports:
+      # LINTEN_BIND is empty by default, so this stays "4000:4000". The quickstart
+      # script sets it to "127.0.0.1:" so new installs listen on this machine only.
+      - "${LINTEN_BIND:-}${LINTEN_PORT:-4000}:4000"
+    environment:
+      LINTEN_MASTER_KEY: ${LINTEN_MASTER_KEY:?set it in .env - see the header of this file}
+      LINTEN_SALT_KEY: ${LINTEN_SALT_KEY:?set it in .env - see the header of this file}
+      DATABASE_URL: postgresql://linten:${POSTGRES_PASSWORD:-linten}@db:5432/linten
+      STORE_MODEL_IN_DB: "True"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: linten
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-linten}
+      POSTGRES_DB: linten
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U linten"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

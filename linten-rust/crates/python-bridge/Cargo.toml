@@ -1,0 +1,93 @@
+[package]
+name = "linten-python-bridge"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[lib]
+name = "_native"
+crate-type = ["cdylib"]
+
+[features]
+default = ["abi3", "fast", "huggingface", "tiktoken"]
+abi3 = ["pyo3/abi3-py310"]
+extension-module = ["pyo3/extension-module"]
+panic-test = []
+fast = ["linten-token-counter/fast"]
+huggingface = ["linten-token-counter/huggingface"]
+tiktoken = ["linten-token-counter/tiktoken"]
+
+[dependencies]
+rustls.workspace = true
+linten-secret-value.workspace = true
+fancy-regex.workspace = true
+linten-tracing.workspace = true
+linten-spend-clickhouse.workspace = true
+linten-storage-clickhouse.workspace = true
+linten-host.workspace = true
+async-trait.workspace = true
+bytes.workspace = true
+futures-util.workspace = true
+linten-cache.workspace = true
+linten-error.workspace = true
+linten-circuit-breaker.workspace = true
+linten-redis-client.workspace = true
+linten-redis-connect.workspace = true
+linten-redis-store.workspace = true
+linten-redis-resolve.workspace = true
+linten-python-compat.workspace = true
+linten-redis-types.workspace = true
+tracing.workspace = true
+linten-cache-response.workspace = true
+serde.workspace = true
+linten-auth.workspace = true
+linten-auth-aws.workspace = true
+linten-callbacks-legacy-python.workspace = true
+linten-inference.workspace = true
+linten-inference-transcription.workspace = true
+linten-inference-responses.workspace = true
+linten-inference-messages.workspace = true
+linten-inference-chat.workspace = true
+linten-inference-ocr.workspace = true
+linten-core-utils.workspace = true
+linten-http.workspace = true
+linten-llms.workspace = true
+linten-secrets = { workspace = true, features = ["aws", "azure", "google", "hashicorp", "cyberark"] }
+linten-secrets-types.workspace = true
+linten-llms-types.workspace = true
+linten-router-types.workspace = true
+linten-router-core.workspace = true
+linten-host-python.workspace = true
+linten-model-catalog.workspace = true
+linten-model-catalog-refresh.workspace = true
+linten-token-counter = { path = "../token-counter", default-features = false }
+indexmap = "2.14.0"
+pyo3 = { workspace = true, features = ["indexmap"] }
+prost.workspace = true
+pyo3-async-runtimes.workspace = true
+reqwest.workspace = true
+serde_json.workspace = true
+strum.workspace = true
+veil.workspace = true
+thiserror.workspace = true
+tokio = { workspace = true, features = ["rt", "sync"] }
+
+[dev-dependencies]
+tracing.workspace = true
+linten-http = { workspace = true, features = ["test-support"] }
+linten-secrets-aws.workspace = true
+serde.workspace = true
+serde_with.workspace = true
+criterion.workspace = true
+futures-util.workspace = true
+rstest.workspace = true
+sqlx = { workspace = true, features = ["migrate"] }
+tempfile.workspace = true
+tokio-tungstenite.workspace = true
+wiremock.workspace = true
+aws-sdk-secretsmanager = "1.117.0"
+
+[[bench]]
+name = "serialization"
+harness = false

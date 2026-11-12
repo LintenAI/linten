@@ -1,0 +1,12 @@
+{{- if .Values.gateway.config.create }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "linten.workload.fullname" . }}-config
+  labels:
+    {{- include "linten.commonLabels" . | nindent 4 }}
+    app.kubernetes.io/component: {{ include "linten.workload.componentName" . }}
+data:
+  config.yaml: |
+{{ .Values.gateway.config.proxy_config | toYaml | indent 6 }}
+{{- end }}

@@ -1,0 +1,21 @@
+[package]
+name = "linten-cache-response"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+linten-cache.workspace = true
+py_literal = "0.4.0"
+serde.workspace = true
+serde_json.workspace = true
+sha2.workspace = true
+
+[dev-dependencies]
+linten-cache-gcs.workspace = true
+linten-http = { workspace = true, features = ["test-support"] }
+linten-cache-memory.workspace = true
+rstest.workspace = true
+tokio.workspace = true
+wiremock.workspace = true

@@ -1,0 +1,46 @@
+name: linten-tracing
+
+services:
+  linten:
+    build:
+      context: ..
+      target: runtime
+      args:
+        LINTEN_RELEASE_TAG: ${LINTEN_RELEASE_TAG:-}
+    command: ["--config", "/app/tracing-config.yaml", "--port", "4000"]
+    environment:
+      LINTEN_MASTER_KEY: ${LINTEN_MASTER_KEY:?set LINTEN_MASTER_KEY}
+      LINTEN_SALT_KEY: sk-local-tracing-salt-key
+      DATABASE_URL: postgresql://linten:linten@db:5432/linten
+      STORE_MODEL_IN_DB: "True"
+      LINTEN_LENS_URL: ${LINTEN_LENS_URL:?set the Lens URL reachable from the gateway container}
+      LINTEN_LENS_PUBLIC_URL: ${LINTEN_LENS_PUBLIC_URL:?set the Lens URL reachable from your browser and agents}
+      LINTEN_LENS_SERVICE_TOKEN: ${LINTEN_LENS_SERVICE_TOKEN:?set LINTEN_LENS_SERVICE_TOKEN}
+      LENS_GATEWAY_SECRET: ${LENS_GATEWAY_SECRET:?set the same signing secret on Lens and the gateway}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+    volumes:
+      - ./tracing-config.yaml:/app/tracing-config.yaml:ro
+    ports:
+      - "127.0.0.1:4002:4000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: linten
+      POSTGRES_USER: linten
+      POSTGRES_PASSWORD: linten
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "127.0.0.1:15432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U linten -d linten"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  postgres_data:

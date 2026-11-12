@@ -1,0 +1,21 @@
+[package]
+name = "linten-auth"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[features]
+default = []
+aws = ["dep:linten-auth-aws"]
+azure = ["dep:linten-auth-azure"]
+gcp = ["dep:linten-auth-gcp"]
+
+[dependencies]
+linten-auth-types.workspace = true
+linten-auth-aws = { workspace = true, optional = true }
+linten-auth-azure = { workspace = true, optional = true }
+linten-auth-gcp = { workspace = true, optional = true }
+
+[dev-dependencies]
+linten-secret-value.workspace = true

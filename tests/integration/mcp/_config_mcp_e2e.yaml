@@ -1,0 +1,28 @@
+general_settings:
+  master_key: os.environ/LINTEN_MASTER_KEY
+
+linten_settings:
+  drop_params: true
+
+model_list:
+  - model_name: openai-gpt-4o-mini
+    linten_params:
+      model: gpt-4o-mini
+  - model_name: anthropic-claude-haiku-4-5
+    linten_params:
+      model: anthropic/claude-haiku-4-5
+
+mcp_servers:
+  math_stdio:
+    transport: stdio
+    command: python3
+    args:
+      - tests/integration/mcp/_math_server.py
+    allow_all_keys: true  # Needed for master_key auth when DB/object_permission not used
+  math_streamable_http:
+    transport: http
+    url: http://127.0.0.1:0/mcp
+    allow_all_keys: true
+  math_restricted:
+    transport: http
+    url: http://127.0.0.1:0/mcp

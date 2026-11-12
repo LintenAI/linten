@@ -1,0 +1,36 @@
+[package]
+name = "linten-inference"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+linten-cache.workspace = true
+linten-cache-response.workspace = true
+linten-framer.workspace = true
+tokio-util = { version = "0.7", features = ["codec"] }
+linten-secrets.workspace = true
+linten-core-utils.workspace = true
+linten-host.workspace = true
+bytes.workspace = true
+futures-util.workspace = true
+linten-auth = { workspace = true, features = ["aws", "azure", "gcp"] }
+linten-http.workspace = true
+linten-llms.workspace = true
+linten-tracing.workspace = true
+tracing.workspace = true
+reqwest.workspace = true
+serde.workspace = true
+serde_json = { workspace = true, features = ["preserve_order"] }
+tokio = { workspace = true, features = ["sync"] }
+thiserror.workspace = true
+time.workspace = true
+url.workspace = true
+
+[dev-dependencies]
+linten-error.workspace = true
+linten-cache-memory.workspace = true
+linten-http = { workspace = true, features = ["test-support"] }
+linten-llms = { workspace = true, features = ["test-support"] }
+rstest.workspace = true

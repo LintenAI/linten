@@ -1,0 +1,6 @@
+- Shared base and layering rules: [`../inference/AGENTS.md`](../inference/AGENTS.md)
+- This crate owns OCR call orchestration. Payloads belong in `linten-llms-types`, transformations and the request handler in `llms/src/base_llm/ocr` and `llms/src/<provider>/ocr`
+- The route returns its completed response directly
+- Route closures supply OCR-specific host capabilities, such as the caller's Azure AD token provider (`src/route.rs`)
+- Provider code reaches the caller's hooks mid-call only through `linten_llms::base_llm::ocr::handler::CallHooks`, which this crate implements over its host until it folds into `linten_host::interceptors::Interceptors`
+- OCR failures use `base_llm/ocr/error.rs`, the recorded exception to `linten_inference::Error` until OCR folds into `linten_llms::Error`

@@ -1,0 +1,7 @@
+general_settings:
+  master_key: os.environ/LINTEN_MASTER_KEY
+  store_model_in_db: true
+  disable_model_info_refresh: true
+
+linten_settings:
+  callbacks: ["prometheus"]

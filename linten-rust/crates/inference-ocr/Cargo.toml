@@ -1,0 +1,40 @@
+[package]
+name = "linten-inference-ocr"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+linten-secret-value.workspace = true
+base64.workspace = true
+bytes.workspace = true
+futures-util.workspace = true
+linten-auth = { workspace = true, features = ["aws", "azure", "gcp"] }
+linten-core-utils.workspace = true
+linten-host.workspace = true
+linten-http.workspace = true
+linten-inference.workspace = true
+linten-llms.workspace = true
+linten-llms-types.workspace = true
+linten-secrets.workspace = true
+linten-tracing.workspace = true
+mime_guess = "2.0.5"
+serde.workspace = true
+serde_json = { workspace = true, features = ["preserve_order"] }
+tokio.workspace = true
+tracing.workspace = true
+
+[dev-dependencies]
+linten-error.workspace = true
+linten-auth-aws.workspace = true
+linten-auth-gcp.workspace = true
+linten-host-native.workspace = true
+linten-http = { workspace = true, features = ["test-support"] }
+linten-inference-testing.workspace = true
+linten-llms = { workspace = true, features = ["test-support"] }
+rand.workspace = true
+rstest.workspace = true
+time.workspace = true
+url.workspace = true
+wiremock.workspace = true

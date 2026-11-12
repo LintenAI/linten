@@ -1,0 +1,5 @@
+- Shared base and layering rules: [`../inference/AGENTS.md`](../inference/AGENTS.md)
+- This crate owns Responses API call orchestration. Payloads belong in `linten-llms-types`, transformations in `llms/src/base_llm/responses` and `llms/src/<provider>/responses`
+- The HTTP route returns `linten_host::call::CallOutput`: a completed response, or a stream head and chunks, cached through `linten_inference::caching::execute_streaming`
+- WebSocket sessions (`src/websocket.rs`) stay separate from the HTTP call driver because a connection can accept multiple requests while receiving events
+- `src/ids.rs` owns the Linten-managed ids handed back to callers (`resp_`, `encitem_`, `linten_enc:`, `cntr_`) and must stay fully compatible with `linten/responses/utils.py`

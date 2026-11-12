@@ -1,0 +1,181 @@
+import ast
+import os
+
+
+def check_for_linten_module_deletion(base_dir):
+    """
+    Checks for code patterns that delete linten modules from sys.modules
+    in the test_linten directory.
+
+    Specifically looks for patterns like:
+    for module in list(sys.modules.keys()):
+        if module.startswith("linten"):
+            del sys.modules[module]
+    """
+    problematic_files = []
+    candidate_dirs = [os.path.join(base_dir, name) for name in ("test_linten", "unit")]
+    test_dirs = [test_dir for test_dir in candidate_dirs if os.path.exists(test_dir)]
+
+    if not test_dirs:
+        print(f"Warning: None of {candidate_dirs} exist.")
+        return []
+
+    print(f"Checking directories: {test_dirs}")
+
+    for root, _, files in (entry for test_dir in test_dirs for entry in os.walk(test_dir)):
+        for file in files:
+            if file.endswith(".py"):
+                file_path = os.path.join(root, file)
+                try:
+                    with open(file_path, "r") as f:
+                        tree = ast.parse(f.read())
+                except SyntaxError:
+                    print(f"Warning: Syntax error in file {file_path}")
+                    continue
+
+                # Check for linten module deletion patterns
+                if has_linten_module_deletion(tree):
+                    relative_path = os.path.relpath(file_path, base_dir)
+                    problematic_files.append(relative_path)
+                    print(f"Found linten module deletion in: {relative_path}")
+
+    return problematic_files
+
+
+def has_linten_module_deletion(tree):
+    """
+    Checks if the AST contains patterns that delete linten modules from sys.modules.
+
+    Looks for:
+    1. Loops over sys.modules.keys()
+    2. Conditions checking if module startswith "linten"
+    3. del sys.modules[module] statements
+    """
+
+    class LintenDeletionVisitor(ast.NodeVisitor):
+        def __init__(self):
+            self.has_sys_modules_loop = False
+            self.has_linten_check = False
+            self.has_del_sys_modules = False
+            self.current_for_target = None
+
+        def visit_For(self, node):
+            # Check if we're looping over sys.modules.keys()
+            if (
+                isinstance(node.iter, ast.Call)
+                and isinstance(node.iter.func, ast.Attribute)
+                and isinstance(node.iter.func.value, ast.Attribute)
+                and isinstance(node.iter.func.value.value, ast.Name)
+                and node.iter.func.value.value.id == "sys"
+                and node.iter.func.value.attr == "modules"
+                and node.iter.func.attr == "keys"
+            ):
+
+                self.has_sys_modules_loop = True
+                if isinstance(node.target, ast.Name):
+                    self.current_for_target = node.target.id
+
+                # Check the body of the for loop
+                for stmt in node.body:
+                    self.visit(stmt)
+
+            # Also check for list(sys.modules.keys()) pattern
+            elif (
+                isinstance(node.iter, ast.Call)
+                and isinstance(node.iter.func, ast.Name)
+                and node.iter.func.id == "list"
+                and len(node.iter.args) == 1
+                and isinstance(node.iter.args[0], ast.Call)
+                and isinstance(node.iter.args[0].func, ast.Attribute)
+                and isinstance(node.iter.args[0].func.value, ast.Attribute)
+                and isinstance(node.iter.args[0].func.value.value, ast.Name)
+                and node.iter.args[0].func.value.value.id == "sys"
+                and node.iter.args[0].func.value.attr == "modules"
+                and node.iter.args[0].func.attr == "keys"
+            ):
+
+                self.has_sys_modules_loop = True
+                if isinstance(node.target, ast.Name):
+                    self.current_for_target = node.target.id
+
+                # Check the body of the for loop
+                for stmt in node.body:
+                    self.visit(stmt)
+
+            self.generic_visit(node)
+
+        def visit_If(self, node):
+            # Check for conditions like module.startswith("linten")
+            if (
+                isinstance(node.test, ast.Call)
+                and isinstance(node.test.func, ast.Attribute)
+                and isinstance(node.test.func.value, ast.Name)
+                and node.test.func.value.id == self.current_for_target
+                and node.test.func.attr == "startswith"
+                and len(node.test.args) == 1
+                and isinstance(node.test.args[0], ast.Constant)
+                and node.test.args[0].value == "linten"
+            ):
+
+                self.has_linten_check = True
+
+                # Check the body of the if statement
+                for stmt in node.body:
+                    self.visit(stmt)
+
+            self.generic_visit(node)
+
+        def visit_Delete(self, node):
+            # Check for del sys.modules[module]
+            for target in node.targets:
+                if (
+                    isinstance(target, ast.Subscript)
+                    and isinstance(target.value, ast.Attribute)
+                    and isinstance(target.value.value, ast.Name)
+                    and target.value.value.id == "sys"
+                    and target.value.attr == "modules"
+                    and isinstance(target.slice, ast.Name)
+                    and target.slice.id == self.current_for_target
+                ):
+
+                    self.has_del_sys_modules = True
+
+            self.generic_visit(node)
+
+    visitor = LintenDeletionVisitor()
+    visitor.visit(tree)
+
+    return (
+        visitor.has_sys_modules_loop
+        and visitor.has_linten_check
+        and visitor.has_del_sys_modules
+    )
+
+
+def main():
+    """
+    Main function to check for linten module deletion patterns in test files.
+    """
+    # local dir
+    # tests_dir = "../../tests/"
+
+    # ci/cd dir
+    tests_dir = "./tests/"
+
+    problematic_files = check_for_linten_module_deletion(tests_dir)
+
+    if problematic_files:
+        print("\nERROR: Found files that delete linten modules from sys.modules:")
+        for file_path in problematic_files:
+            print(f"  - {file_path}")
+
+        raise Exception(
+            f"Found {len(problematic_files)} file(s) that delete linten modules from sys.modules. "
+            f"This can cause import issues and test failures. Files: {problematic_files}"
+        )
+    else:
+        print("✓ No linten module deletion patterns found in tests/unit.")
+
+
+if __name__ == "__main__":
+    main()

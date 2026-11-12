@@ -1,0 +1,7 @@
+{{- include "linten.pdb" (dict
+  "root" $
+  "enabled" (include "linten.gateway.render" .)
+  "component" .Values.gateway
+  "componentName" "gateway"
+  "fullname" (include "linten.gateway.fullname" .)
+  "selectorLabels" (include "linten.gateway.selectorLabels" .)) }}

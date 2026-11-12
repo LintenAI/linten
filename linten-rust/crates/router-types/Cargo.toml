@@ -1,0 +1,17 @@
+[package]
+name = "linten-router-types"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "The types of linten/types/router.py: a deployment's linten_params as a config or a caller spells them"
+
+[dependencies]
+linten-secret-value.workspace = true
+linten-auth-types.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+serde_with.workspace = true
+
+[dev-dependencies]
+rstest.workspace = true

@@ -1,0 +1,3 @@
+{{- if and .Values.monolith.enabled .Values.gateway.hpa.enabled }}
+{{- include "linten.workload.hpa" . }}
+{{- end }}

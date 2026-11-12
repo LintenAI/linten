@@ -1,0 +1,28 @@
+[package]
+name = "linten-secrets-azure"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+linten-secret-value.workspace = true
+linten-http.workspace = true
+tokio.workspace = true
+linten-auth-azure.workspace = true
+linten-auth-types.workspace = true
+linten-secrets-types.workspace = true
+linten-core-utils.workspace = true
+reqwest.workspace = true
+serde.workspace = true
+thiserror.workspace = true
+url.workspace = true
+veil.workspace = true
+percent-encoding = "2.3"
+
+[dev-dependencies]
+linten-http = { workspace = true, features = ["test-support"] }
+wiremock.workspace = true
+rstest.workspace = true
+serde_json.workspace = true
+sha2.workspace = true

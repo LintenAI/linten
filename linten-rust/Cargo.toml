@@ -1,0 +1,169 @@
+[workspace]
+members = ["crates/*"]
+resolver = "2"
+
+[workspace.package]
+edition = "2024"
+rust-version = "1.88"
+license = "MIT"
+repository = "https://github.com/LintenAI/linten"
+
+[workspace.dependencies]
+linten-config = { path = "crates/config" }
+linten-error = { path = "crates/error" }
+linten-router = { path = "crates/router" }
+linten-router-types = { path = "crates/router-types" }
+linten-router-core = { path = "crates/router-core" }
+linten-tracing = { path = "crates/tracing" }
+linten-spend-clickhouse = { path = "crates/spend-clickhouse" }
+linten-storage-clickhouse = { path = "crates/storage-clickhouse" }
+linten-inference = { path = "crates/inference" }
+linten-inference-transcription = { path = "crates/inference-transcription" }
+linten-inference-responses = { path = "crates/inference-responses" }
+linten-inference-messages = { path = "crates/inference-messages" }
+linten-inference-chat = { path = "crates/inference-chat" }
+linten-inference-ocr = { path = "crates/inference-ocr" }
+linten-inference-testing = { path = "crates/inference-testing" }
+linten-gateway-mcp = { path = "crates/gateway-mcp" }
+linten-gateway = { path = "crates/gateway" }
+linten-gateway-forward = { path = "crates/gateway-forward" }
+linten-gateway-inference = { path = "crates/gateway-inference" }
+linten-gateway-auth = { path = "crates/gateway-auth" }
+linten-gateway-management = { path = "crates/gateway-management" }
+linten-gateway-ui = { path = "crates/gateway-ui" }
+linten-coroutine = { path = "crates/coroutine" }
+linten-host = { path = "crates/host" }
+linten-host-http = { path = "crates/host-http" }
+linten-host-native = { path = "crates/host-native" }
+linten-callbacks-legacy-python = { path = "crates/callbacks-legacy-python" }
+linten-framer = { path = "crates/framer" }
+linten-auth = { path = "crates/auth" }
+linten-auth-types = { path = "crates/auth-types" }
+linten-secret-value = { path = "crates/secret-value" }
+linten-auth-aws = { path = "crates/auth-aws" }
+linten-auth-azure = { path = "crates/auth-azure" }
+linten-auth-gcp = { path = "crates/auth-gcp" }
+linten-secrets = { path = "crates/secrets" }
+linten-secrets-types = { path = "crates/secrets-types" }
+linten-secrets-aws = { path = "crates/secrets-aws" }
+linten-secrets-google = { path = "crates/secrets-google" }
+linten-secrets-hashicorp = { path = "crates/secrets-hashicorp" }
+linten-secrets-azure = { path = "crates/secrets-azure" }
+linten-secrets-cyberark = { path = "crates/secrets-cyberark" }
+linten-http = { path = "crates/http" }
+linten-llms = { path = "crates/llms" }
+linten-llms-types = { path = "crates/llms-types" }
+linten-core-utils = { path = "crates/core-utils" }
+linten-db = { path = "crates/db" }
+linten-db-testing = { path = "crates/db-testing" }
+linten-cache = { path = "crates/cache" }
+linten-cache-azure-blob = { path = "crates/cache-azure-blob" }
+linten-cache-memory = { path = "crates/cache-memory" }
+linten-cache-s3 = { path = "crates/cache-s3" }
+linten-s3 = { path = "crates/s3" }
+linten-cache-gcs = { path = "crates/cache-gcs" }
+linten-cache-disk = { path = "crates/cache-disk" }
+linten-cache-response = { path = "crates/cache-response" }
+linten-cache-qdrant-semantic = { path = "crates/cache-qdrant-semantic" }
+linten-cache-testing = { path = "crates/cache-testing" }
+linten-token-counter = { path = "crates/token-counter" }
+linten-token-counter-fast = { path = "crates/token-counter-fast" }
+linten-token-counter-huggingface = { path = "crates/token-counter-huggingface" }
+linten-token-counter-tiktoken = { path = "crates/token-counter-tiktoken" }
+linten-host-python = { path = "crates/host-python" }
+linten-python-compat = { path = "crates/python-compat" }
+linten-circuit-breaker = { path = "crates/circuit-breaker" }
+linten-redis-client = { path = "crates/redis-client" }
+linten-redis-connect = { path = "crates/redis-connect" }
+linten-redis-store = { path = "crates/redis-store" }
+linten-redis-testing = { path = "crates/redis-testing" }
+linten-redis-resolve = { path = "crates/redis-resolve" }
+linten-redis-types = { path = "crates/redis-types" }
+linten-cost = { path = "crates/cost" }
+linten-model-catalog = { path = "crates/model-catalog" }
+linten-model-catalog-refresh = { path = "crates/model-catalog-refresh" }
+
+arc-swap = "1.9.2"
+async-trait = "0.1.91"
+askama = { version = "0.16.1", default-features = false, features = ["derive", "std"] }
+tracing = "0.1"
+axum = { version = "0.8.9", default-features = false, features = ["http1", "tokio", "multipart"] }
+axum-login = "0.18.0"
+tower-sessions = { version = "0.14.0", features = ["memory-store"] }
+bytes = "1"
+backon = { version = "1.6.0", default-features = false, features = ["std", "tokio-sleep"] }
+aws-sdk-s3 = { version = "1.146.1", default-features = false, features = ["rt-tokio"] }
+http = "1"
+google-cloud-auth = { version = "1.16.0", default-features = false }
+jsonwebtoken = { version = "11.1.0", default-features = false }
+hyper-util = { version = "0.1.20", default-features = false, features = ["client-proxy"] }
+parking_lot = "0.12.5"
+proptest = "1.7.0"
+pyo3 = "0.29.2"
+pyo3-async-runtimes = { version = "0.29.0", features = ["tokio-runtime"] }
+rand = "0.8"
+macro_rules_attribute = "0.2.3"
+schemars = "1"
+reqwest = { version = "0.13", default-features = false, features = ["json", "multipart", "rustls", "http2", "stream", "query"] }
+redis = "1.8.0"
+testcontainers-modules = "0.15.0"
+qdrant-client = { version = "1.19.0", default-features = false }
+uuid = { version = "1", features = ["v4"] }
+rstest = "0.26.1"
+wiremock = "0.6.5"
+rstest_reuse = "0.7.0"
+rustls = { version = "0.23", default-features = false, features = ["ring", "std", "tls12"] }
+rustls-native-certs = "0.8"
+rustify = "=0.7.0"
+rustify_derive = "=0.5.5"
+vaultrs = { version = "=0.8.0", default-features = false, features = ["rustls"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = { version = "1.0", features = ["float_roundtrip"] }
+serde_with = { version = "=3.21.0", default-features = false, features = ["std", "macros"] }
+sha2 = "0.10"
+sha1 = "0.10"
+syn = { version = "2", default-features = false }
+sqlx = { version = "0.9.0", default-features = false, features = ["json", "macros", "postgres", "runtime-tokio", "chrono", "tls-rustls-ring-native-roots"] }
+chrono = { version = "0.4.45", default-features = false, features = ["std"] }
+proc-macro2 = "1"
+quote = "1"
+subtle = "2"
+thiserror = "2.0"
+tokenizers = { version = "0.23.1", default-features = false, features = ["onig"] }
+tiktoken-rs = "0.12.0"
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "time", "net"] }
+tokio-tungstenite = { version = "0.24", default-features = false, features = ["handshake"] }
+futures-util = { version = "0.3", default-features = false, features = ["sink", "std"] }
+base64 = "0.22"
+flate2 = "1"
+semver = "1"
+tar = "0.4"
+target-lexicon = "0.13.5"
+tempfile = "3"
+zip = { version = "2", default-features = false, features = ["deflate"] }
+moka = { version = "0.12.16", features = ["future"] }
+strum = { version = "0.28.0", features = ["derive"] }
+url = "2.5.8"
+percent-encoding = "2.3"
+webpki-roots = "1.0.10"
+time = { version = "0.3.53", features = ["parsing"] }
+criterion = "0.8.2"
+fancy-regex = "0.19.2"
+veil = "0.3.0"
+prost = "0.14.4"
+opentelemetry-proto = "0.33"
+
+[profile.release]
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+panic = "unwind"
+debug = false
+incremental = false
+strip = "symbols"
+
+[profile.ci]
+inherits = "release"
+opt-level = 0
+lto = false
+codegen-units = 256

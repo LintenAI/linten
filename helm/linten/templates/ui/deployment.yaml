@@ -1,0 +1,135 @@
+{{- if include "linten.ui.render" . }}
+{{- $componentHosts := .Values.ingress.componentHosts | default dict -}}
+{{- $hasComponentHosts := or $componentHosts.ui $componentHosts.backend $componentHosts.gateway -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "linten.ui.fullname" . }}
+  labels:
+    {{- include "linten.commonLabels" . | nindent 4 }}
+    app.kubernetes.io/component: ui
+    {{- with .Values.ui.deploymentLabels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  {{- with .Values.ui.deploymentAnnotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if and (not .Values.ui.hpa.enabled) (not (kindIs "invalid" .Values.ui.replicaCount)) }}
+  replicas: {{ .Values.ui.replicaCount }}
+  {{- end }}
+  {{- $minReady := .Values.ui.minReadySeconds }}
+  {{- if not (or (kindIs "invalid" $minReady) (eq (printf "%v" $minReady) "")) }}
+  minReadySeconds: {{ $minReady }}
+  {{- end }}
+  {{- with .Values.ui.strategy }}
+  strategy:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "linten.ui.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.ui.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "linten.ui.selectorLabels" . | nindent 8 }}
+        {{- with .Values.ui.podLabels }}
+        {{- include "linten.podLabels" (dict "podLabels" . "componentName" "ui") | nindent 8 }}
+        {{- end }}
+    spec:
+      serviceAccountName: {{ include "linten.ui.serviceAccountName" . }}
+      automountServiceAccountToken: {{ .Values.serviceAccounts.ui.automount }}
+      {{- with .Values.ui.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.ui.extraInitContainers }}
+      initContainers:
+        {{- tpl (toYaml .) $ | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: ui
+          image: {{ include "linten.image" . | quote }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- with .Values.ui.securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          args:
+            - ui
+          ports:
+            - name: http
+              containerPort: 3000
+              protocol: TCP
+          env:
+            {{- if .Values.ui.logLevel }}
+            - name: LINTEN_LOG
+              value: {{ .Values.ui.logLevel | quote }}
+            {{- end }}
+            {{- if and .Values.ui.backendUrl $hasComponentHosts }}
+            - name: LINTEN_BACKEND_URL
+              value: {{ include "linten.ui.backendOrigin" . | quote }}
+            {{- end }}
+            {{- with .Values.ui.extraEnv }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          {{- include "linten.envFrom" .Values.ui | nindent 10 }}
+          {{- with .Values.ui.volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.ui.livenessProbe }}
+          livenessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.ui.readinessProbe }}
+          readinessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.ui.startupProbe }}
+          startupProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.ui.lifecycle }}
+          lifecycle:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.ui.resources | nindent 12 }}
+      {{- with .Values.ui.extraContainers }}
+        {{- tpl (toYaml .) $ | nindent 8 }}
+      {{- end }}
+      {{- with .Values.ui.volumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.ui.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.ui.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.ui.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.ui.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- $gracePeriod := .Values.ui.terminationGracePeriodSeconds }}
+      {{- if not (or (kindIs "invalid" $gracePeriod) (eq (printf "%v" $gracePeriod) "")) }}
+      terminationGracePeriodSeconds: {{ $gracePeriod }}
+      {{- end }}
+{{- end }}

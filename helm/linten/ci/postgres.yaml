@@ -1,0 +1,58 @@
+# Throwaway PostgreSQL for the CircleCI helm_chart_testing job. Applied with
+# kubectl before `helm install`; the chart itself ships no database.
+apiVersion: v1
+kind: Secret
+metadata:
+  name: linten-ci-postgres
+type: Opaque
+stringData:
+  username: linten
+  password: linten-ci
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: linten-ci-postgres
+spec:
+  selector:
+    app: linten-ci-postgres
+  ports:
+    - port: 5432
+      targetPort: 5432
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: linten-ci-postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: linten-ci-postgres
+  template:
+    metadata:
+      labels:
+        app: linten-ci-postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:16.10-alpine@sha256:029660641a0cfc575b14f336ba448fb8a75fd595d42e1fa316b9fb4378742297
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_DB
+              value: linten
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: linten-ci-postgres
+                  key: username
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: linten-ci-postgres
+                  key: password
+          readinessProbe:
+            exec:
+              command: [pg_isready, -U, linten, -d, linten]
+            periodSeconds: 2

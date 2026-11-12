@@ -1,0 +1,122 @@
+from unittest.mock import AsyncMock, MagicMock
+
+import pytest
+
+# Adds the grandparent directory to sys.path to allow importing project modules
+import linten
+from linten.integrations.SlackAlerting.utils import add_langfuse_trace_id_to_alert
+from linten.linten_core_utils.logging_callback_manager import LoggingCallbackManager
+
+
+@pytest.mark.asyncio
+async def test_langfuse_not_initialized_returns_none_early():
+    """
+    Test that when no LangfusePromptManagement is initialized,
+    the function returns None immediately without executing further logic
+    """
+    # Ensure no Langfuse logger is in the callback manager
+    linten.logging_callback_manager = LoggingCallbackManager()
+
+    # Create request data that would normally trigger processing
+    request_data = {"linten_logging_obj": MagicMock(), "trace_id": "test-trace-id"}
+
+    # Call the function
+    result = await add_langfuse_trace_id_to_alert(request_data)
+
+    # Should return None early without processing request_data
+    assert result is None
+
+    # Verify the linten_logging_obj was never accessed (early return)
+    request_data["linten_logging_obj"].assert_not_called()
+
+
+@pytest.mark.asyncio
+async def test_langfuse_trace_url_uses_the_request_host_without_building_a_logger(monkeypatch):
+    """Key-scoped callbacks point at their own Langfuse host; the alert link follows it.
+
+    The lookup must not construct a LangFuseLogger per alert, or an alert storm
+    exhausts the initialized-client ceiling and takes the callback down with it.
+    """
+    monkeypatch.setattr(linten, "success_callback", ["langfuse"])
+    monkeypatch.setattr(linten, "initialized_langfuse_clients", 0)
+    logging_obj = MagicMock()
+    logging_obj.get_trace_id.return_value = "abc123"
+    logging_obj.standard_callback_dynamic_params = {"langfuse_host": "http://127.0.0.1:1"}
+
+    result = await add_langfuse_trace_id_to_alert({"linten_logging_obj": logging_obj})
+
+    assert result == "http://127.0.0.1:1/trace/abc123"
+    assert linten.initialized_langfuse_clients == 0
+
+
+@pytest.mark.asyncio
+async def test_langfuse_trace_url_falls_back_to_the_env_host(monkeypatch):
+    monkeypatch.setattr(linten, "success_callback", ["langfuse"])
+    monkeypatch.setenv("LANGFUSE_HOST", "langfuse.internal:3000")
+    logging_obj = MagicMock()
+    logging_obj.get_trace_id.return_value = "abc123"
+    logging_obj.standard_callback_dynamic_params = {}
+
+    assert await add_langfuse_trace_id_to_alert({"linten_logging_obj": logging_obj}) == (
+        "http://langfuse.internal:3000/trace/abc123"
+    )
+
+
+@pytest.mark.asyncio
+async def test_langfuse_trace_url_when_callback_registered_as_logger_instance(monkeypatch):
+    from linten.integrations.langfuse.langfuse import LangFuseLogger
+
+    logger = LangFuseLogger(
+        langfuse_public_key="pk-slack-instance",
+        langfuse_secret="sk-slack-instance",
+        langfuse_host="http://127.0.0.1:1",
+    )
+    monkeypatch.setattr(linten, "success_callback", [logger])
+    monkeypatch.setattr(linten, "failure_callback", [])
+    monkeypatch.setattr(linten, "_async_success_callback", [])
+    monkeypatch.setattr(linten, "_async_failure_callback", [])
+    monkeypatch.setattr(linten, "callbacks", [])
+    monkeypatch.setenv("LANGFUSE_HOST", "http://env-host.invalid")
+    logging_obj = MagicMock()
+    logging_obj.get_trace_id.return_value = "trace-from-instance"
+    logging_obj.standard_callback_dynamic_params = {}
+
+    result = await add_langfuse_trace_id_to_alert({"linten_logging_obj": logging_obj})
+
+    assert result == "http://127.0.0.1:1/trace/trace-from-instance"
+
+
+@pytest.mark.asyncio
+async def test_langfuse_trace_url_when_prompt_management_is_the_registered_callback(monkeypatch):
+    """Prompt management registers a LangFuseLogger subclass; the alert must read its host, not crash."""
+    from linten.integrations.langfuse.langfuse_prompt_management import LangfusePromptManagement
+
+    prompt_callback = LangfusePromptManagement(
+        langfuse_public_key="pk-slack-prompt",
+        langfuse_secret="sk-slack-prompt",
+        langfuse_host="http://127.0.0.1:2",
+    )
+    monkeypatch.setattr(linten, "success_callback", ["langfuse"])
+    monkeypatch.setattr(linten, "failure_callback", [])
+    monkeypatch.setattr(linten, "_async_success_callback", [])
+    monkeypatch.setattr(linten, "_async_failure_callback", [])
+    monkeypatch.setattr(linten, "callbacks", [prompt_callback])
+    monkeypatch.setenv("LANGFUSE_HOST", "http://env-host.invalid")
+    logging_obj = MagicMock()
+    logging_obj.get_trace_id.return_value = "trace-from-prompt-callback"
+    logging_obj.standard_callback_dynamic_params = {}
+
+    result = await add_langfuse_trace_id_to_alert({"linten_logging_obj": logging_obj})
+
+    assert result == "http://127.0.0.1:2/trace/trace-from-prompt-callback"
+
+
+@pytest.mark.asyncio
+async def test_langfuse_trace_url_absent_when_trace_id_never_arrives(monkeypatch):
+    monkeypatch.setattr(linten, "success_callback", ["langfuse"])
+    monkeypatch.setattr("linten.integrations.SlackAlerting.utils.asyncio.sleep", AsyncMock())
+    logging_obj = MagicMock()
+    logging_obj.get_trace_id.return_value = None
+    logging_obj.standard_callback_dynamic_params = {"langfuse_host": "http://127.0.0.1:1"}
+
+    assert await add_langfuse_trace_id_to_alert({"linten_logging_obj": logging_obj}) is None

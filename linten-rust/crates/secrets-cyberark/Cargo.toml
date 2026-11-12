@@ -1,0 +1,32 @@
+[package]
+name = "linten-secrets-cyberark"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+linten-secret-value.workspace = true
+linten-secrets-types.workspace = true
+linten-core-utils.workspace = true
+linten-http.workspace = true
+base64.workspace = true
+moka.workspace = true
+reqwest.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+url.workspace = true
+veil.workspace = true
+linten-tracing.workspace = true
+percent-encoding = "2.3"
+tokio = { workspace = true, features = ["sync"] }
+
+[dev-dependencies]
+linten-http = { workspace = true, features = ["test-support"] }
+rcgen = "0.14.10"
+rstest.workspace = true
+tempfile = "3.27.0"
+tokio.workspace = true
+wiremock.workspace = true
+serde.workspace = true
+serde_json.workspace = true

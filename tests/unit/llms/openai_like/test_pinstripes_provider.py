@@ -1,0 +1,72 @@
+"""
+Tests for Pinstripes provider configuration and integration.
+"""
+
+import linten
+
+
+class TestPinstripeProviderConfig:
+    """Test Pinstripes provider configuration"""
+
+    def test_pinstripes_in_provider_list(self):
+        """Test that pinstripes is in the provider list"""
+        from linten import LlmProviders
+
+        assert hasattr(LlmProviders, "PINSTRIPES")
+        assert LlmProviders.PINSTRIPES.value == "pinstripes"
+        assert "pinstripes" in linten.provider_list
+
+
+    def test_pinstripes_in_openai_compatible_providers(self):
+        """Test that pinstripes is in the openai_compatible_providers list"""
+        from linten.constants import openai_compatible_providers
+
+        assert "pinstripes" in openai_compatible_providers
+
+
+    def test_pinstripes_api_base_override(self):
+        """Test that an explicit api_base / api_key overrides the default"""
+        from linten.linten_core_utils.get_llm_provider_logic import get_llm_provider
+
+        model, provider, api_key, api_base = get_llm_provider(
+            model="pinstripes/ps/glm-4.5-air",
+            custom_llm_provider=None,
+            api_base="https://custom.pinstripes.io/v1",
+            api_key="sk-test",
+        )
+
+        assert provider == "pinstripes"
+        assert api_base == "https://custom.pinstripes.io/v1"
+        assert api_key == "sk-test"
+
+    def test_pinstripes_url_autodetection(self):
+        """Test that api_base=pinstripes.io/v1 auto-sets custom_llm_provider=pinstripes"""
+        from linten.linten_core_utils.get_llm_provider_logic import get_llm_provider
+
+        model, provider, api_key, api_base = get_llm_provider(
+            model="ps/glm-4.5-air",
+            custom_llm_provider=None,
+            api_base="https://pinstripes.io/v1",
+            api_key=None,
+        )
+        assert provider == "pinstripes"
+        assert api_base == "https://pinstripes.io/v1"
+
+    def test_pinstripes_router_config(self):
+        """Test that pinstripes can be used in Router configuration"""
+        from linten import Router
+
+        router = Router(
+            model_list=[
+                {
+                    "model_name": "pinstripes-chat",
+                    "linten_params": {
+                        "model": "pinstripes/ps/glm-4.5-air",
+                        "api_key": "test-key",
+                    },
+                }
+            ]
+        )
+
+        assert len(router.model_list) == 1
+        assert router.model_list[0]["model_name"] == "pinstripes-chat"
